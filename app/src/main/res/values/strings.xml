@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">StarWarsApp</string>
+	<string name="title_app">Meu primeiro App :)</string>
+	<string name="button_app">Selecionar Personagem</string>
+	<string name="button_back">Voltar</string>
+    <string name="luke_skywalker">Seja bem vindo(a) ao meu primeiro App.
+		Avance para obter uma lista dos personagens de StarWars
+		que foram consumidas de uma API. Obrigado!
+    </string>
+	<string name="prompt">Selecione...</string>
+    <string name="ops_sem_sinal_de_internet">Ops, sem sinal de internet.</string>
+</resources>

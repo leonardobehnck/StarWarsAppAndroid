@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StarWarsApp</string>
+    <string name="app_name">StarWarsAppRetrofit</string>
 	<string name="title_app">Meu primeiro App :)</string>
 	<string name="button_app">Selecionar Personagem</string>
 	<string name="button_back">Voltar</string>

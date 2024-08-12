@@ -22,11 +22,17 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.starwarsapp.R
+import com.example.starwarsapp.data.CharacterApi
 import com.example.starwarsapp.domain.Character
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
 import org.json.JSONObject
 import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -39,12 +45,14 @@ class PersonagemActivity : AppCompatActivity() {
   lateinit var progress: ProgressBar
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
+  lateinit var characterApi : CharacterApi
 
   var characterList : ArrayList<Character> = ArrayList()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_person)
+    setupRetrofit()
     setupView()
     setupListeners()
 
@@ -67,6 +75,27 @@ class PersonagemActivity : AppCompatActivity() {
       emptyState()
     }
     Log.d("RESUME", "RESUME")
+  }
+
+  fun setupRetrofit() {
+    val retrofit = Retrofit.Builder()
+      .baseUrl("https://swapi.dev/api/people/")
+      .addConverterFactory(GsonConverterFactory.create())
+      .build()
+    characterApi = retrofit.create(CharacterApi::class.java)
+  }
+
+  fun getAllCharacters() {
+    characterApi.getAllCharacters().enqueue(object : Callback<List<Character>>{
+      override fun onResponse(p0: Call<List<Character>>, p1: Response<List<Character>>) {
+        TODO("Not yet implemented")
+      }
+
+      override fun onFailure(p0: Call<List<Character>>, p1: Throwable) {
+        TODO("Not yet implemented")
+      }
+
+    })
   }
 
   fun emptyState() {

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "StarWarsApp"
+rootProject.name = "StarWarsAppRetrofit"
 include(":app")

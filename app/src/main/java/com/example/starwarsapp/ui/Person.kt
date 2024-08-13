@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.starwarsapp.R
 import com.example.starwarsapp.data.CharacterApi
@@ -26,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class PersonagemActivity : AppCompatActivity() {
 
@@ -77,7 +79,7 @@ class PersonagemActivity : AppCompatActivity() {
 fun getAllCharacters() {
   characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
     override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
-      Log.d("TESTE", p1.toString())
+      Toast.makeText(this@PersonagemActivity, R.string.response_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {

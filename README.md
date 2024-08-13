@@ -7,14 +7,14 @@
 
 - `Objetivo`: Exercício Aplicativo Star Wars
 
-- `Função`: Criar telas, textos e botões
+- `Objetivo`: Criar telas, textos e botões
 
-- `Função`: Aplicação de TabLayout
+- `Objetivo`: Aplicação de TabLayout
 
-- `Função`: Aplicação de Fragment
+- `Objetivo`: Aplicação de Fragment
 
-- `Função`: Verificação de conexão com a internet
+- `Objetivo`: Verificação de conexão com a internet
 
-- `Função`: Aplicação de ProgressBar
+- `Objetivo`: Aplicação de ProgressBar
 
 - `Função`: Consumo de API, tratamento de JSON e Listagem de dados

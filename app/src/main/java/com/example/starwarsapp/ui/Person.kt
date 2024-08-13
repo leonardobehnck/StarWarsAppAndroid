@@ -1,11 +1,8 @@
 package com.example.starwarsapp.ui
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,37 +14,28 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ProgressBar
-import android.widget.SimpleAdapter
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.starwarsapp.R
 import com.example.starwarsapp.data.CharacterApi
+import com.example.starwarsapp.data.CharacterWrapper
 import com.example.starwarsapp.domain.Character
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.json.JSONException
-import org.json.JSONObject
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.net.HttpURLConnection
-import java.net.URL
 
 class PersonagemActivity : AppCompatActivity() {
 
   lateinit var btnBackBottom: Button
-  lateinit var lista: ListView
-  lateinit var spinner: Spinner
+  lateinit var list: ListView
   lateinit var btnBackbtnBackTop: FloatingActionButton
   lateinit var progress: ProgressBar
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
-
-  var characterList : ArrayList<Character> = ArrayList()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -57,20 +45,20 @@ class PersonagemActivity : AppCompatActivity() {
     setupListeners()
 
     if (checkForInternet()) {
-       callService()
+       getAllCharacters()
      } else {
        emptyState()
      }
 
     val checkInternet = checkForInternet()
     Log.d("There is internet?:", checkInternet.toString())
-  //setupSpinner()
   }
+
 
   override fun onResume() {
     super.onResume()
     if (checkForInternet()) {
-      callService()
+        getAllCharacters()
     } else {
       emptyState()
     }
@@ -79,27 +67,32 @@ class PersonagemActivity : AppCompatActivity() {
 
   fun setupRetrofit() {
     val retrofit = Retrofit.Builder()
-      .baseUrl("https://swapi.dev/api/people/")
+      .baseUrl("https://swapi.dev/api/")
       .addConverterFactory(GsonConverterFactory.create())
       .build()
     characterApi = retrofit.create(CharacterApi::class.java)
   }
 
-  fun getAllCharacters() {
-    characterApi.getAllCharacters().enqueue(object : Callback<List<Character>>{
-      override fun onResponse(p0: Call<List<Character>>, p1: Response<List<Character>>) {
-        TODO("Not yet implemented")
-      }
+  
+fun getAllCharacters() {
+  characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
+    override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
+      Log.d("TESTE", p1.toString())
+    }
 
-      override fun onFailure(p0: Call<List<Character>>, p1: Throwable) {
-        TODO("Not yet implemented")
-      }
-
-    })
-  }
+    override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
+      p1.body()?.let {setupList(it.results)}
+      list.visibility = VISIBLE
+      // Desabilita loader e aviso de conexão com a internet
+        progress.visibility = GONE
+        noInternetImg.visibility = View.GONE
+        noInternetText.visibility = View.GONE
+    }
+  })
+}
 
   fun emptyState() {
-    lista.visibility = View.GONE
+    list.visibility = View.GONE
     noInternetImg.visibility = View.VISIBLE
     noInternetText.visibility = View.VISIBLE
     progress.visibility = View.GONE
@@ -108,31 +101,20 @@ class PersonagemActivity : AppCompatActivity() {
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
     btnBackbtnBackTop = findViewById(R.id.btnBackTop)
-    lista = findViewById(R.id.lista)
+    list = findViewById(R.id.lista)
     progress = findViewById(R.id.tbLoader)
     noInternetImg = findViewById(R.id.iv_empty_state)
     noInternetText = findViewById(R.id.tv_no_wifi)
-    //spinner = findViewById(R.id.spinner)
   }
 
-//  fun setupSpinner() {
-//    val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, characterList)
-//    spinner.adapter = adapter
-//  }
-
-  fun setupList() {
-    val names = characterList.map(Character::name)
+  fun setupList(list: List<Character>) {
+    val names = list.map { it.name }
     val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, names)
-    lista.adapter = adapter
+    this.list.adapter = adapter
     progress.visibility = VISIBLE
   }
 
-  fun callService() {
-    val urlBase = "https://swapi.dev/api/people/?format=json"
-      GetCharacterInformation().execute(urlBase)
-  }
-
-  fun setupListeners() {
+ fun setupListeners() {
     btnBackBottom.setOnClickListener {
       startActivity(Intent(this, MainActivity::class.java))
     }
@@ -158,86 +140,6 @@ class PersonagemActivity : AppCompatActivity() {
         val networkInfo = connectivityManager.activeNetworkInfo ?: return false
         @Suppress("DEPRECATION")
         return networkInfo.isConnected
-      }
-    }
-
-
-  //Classe para recuperar informação do personagem
-  inner class GetCharacterInformation : AsyncTask<String, String, String>() {
-
-    //Sobrescreve a função, onPreExecute é chamada antes do restante
-    override fun onPreExecute() {
-      super.onPreExecute()
-      Log.d("My task", "iniciando...")
-    }
-
-    //Função tratar URL, vararg espera string tipo "1", "2"
-    override fun doInBackground(vararg url: String?): String {
-      var urlConnection: HttpURLConnection? = null
-
-      try {
-        val urlBase = URL(url[0])
-
-        urlConnection = urlBase.openConnection() as HttpURLConnection
-        // timeout de 60.000ms
-        urlConnection.connectTimeout = 60000
-        urlConnection.readTimeout = 60000
-
-        var response = urlConnection.inputStream.bufferedReader().use {it.readText()}
-        publishProgress(response)
-
-      } catch (_: Exception) {
-        Log.e("Erro", "Erro ao realizar conexão.")
-      } finally {
-        urlConnection?.disconnect()
-      }
-      return " "
-
-    }
-
-    override fun onProgressUpdate(vararg values: String?) {
-    values[0]?.let {
-    try {
-        val jsonObject = JSONObject(it)
-        val resultsArray = jsonObject.getJSONArray("results")
-        for (i in 0 until resultsArray.length()) {
-          val character = resultsArray.getJSONObject(i)
-          val name = character.getString("name")
-          val height = character.getString("height")
-          val mass = character.getString("mass")
-          val hairColor = character.getString("hair_color")
-          val skinColor = character.getString("skin_color")
-          val eyeColor =  character.getString("eye_color")
-          val birthYear = character.getString("birth_year")
-          val gender =  character.getString("gender")
-          val homeWorld = character.getString("homeworld")
-
-            val model = Character (
-              name = name,
-              height = height,
-              mass = mass,
-              hairColor = hairColor,
-              skinColor = skinColor,
-              eyeColor = eyeColor,
-              birthYear = birthYear,
-              gender = gender,
-              homeWorld = homeWorld
-            )
-
-          characterList.add(model)
-        }
-
-     // Depois de carregar os dados da API chama função para desenhar na tela
-      lista.visibility = VISIBLE
-      setupList()
-      // Desabilita loader e aviso de conexão com a internet
-      progress.visibility = GONE
-      noInternetImg.visibility = View.GONE
-      noInternetText.visibility = View.GONE
-    } catch (e: JSONException) {
-        Log.e("JSON Error", "Error parsing JSON", e)
-          }
-        }
       }
     }
 }

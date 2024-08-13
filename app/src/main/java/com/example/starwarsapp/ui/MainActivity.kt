@@ -31,22 +31,7 @@ class MainActivity : AppCompatActivity() {
     setuptabs()
   }
 
-  override fun onStart() {
-    super.onStart()
-    Log.d("START", "START")
-  }
-
-  override fun onPause() {
-    super.onPause()
-    Log.d("PAUSE", "PAUSE")
-  }
-
-  override fun onStop() {
-    super.onStop()
-    Log.d("STOP", "STOP")
-  }
-
-  fun setuptabs() {
+ fun setuptabs() {
     val tabsAdapter = TabsAdapter(this)
     viewPager.adapter = tabsAdapter
 

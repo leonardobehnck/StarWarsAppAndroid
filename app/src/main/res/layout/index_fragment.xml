@@ -40,14 +40,14 @@
         />
 
     <TextView
-        android:id="@+id/introducao"
+        android:id="@+id/intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
-        android:text="@string/luke_skywalker"
+        android:text="@string/txt_intro"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"

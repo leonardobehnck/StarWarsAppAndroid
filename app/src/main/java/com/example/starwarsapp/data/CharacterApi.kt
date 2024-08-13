@@ -5,6 +5,6 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface CharacterApi {
-  @GET("?format=json")
-  fun getAllCharacters() : Call<List<Character>>
+  @GET("people/?format=json")
+  fun getAllCharacters() : Call<CharacterWrapper>
 }

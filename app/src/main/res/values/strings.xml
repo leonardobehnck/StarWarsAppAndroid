@@ -8,9 +8,10 @@
 		Avance para obter uma lista dos personagens de StarWars
 		que foram consumidas de uma API. Obrigado!
     </string>
-    <string name="ops_sem_sinal_de_internet">Ops, sem sinal de internet.</string>
+    <string name="ops_no_internet">Ops, sem sinal de internet.</string>
 	<string name="response_error">Algo deu errado. Por favor tente novamente.</string>
     <string name="e_mail">leonardo.behnck@gmail.com</string>
     <string name="linked_in">linkedin.com/in/leonardobehnck</string>
     <string name="git_hub">github.com/leonardobehnck</string>
+    <string name="saved_character"></string>
 </resources>

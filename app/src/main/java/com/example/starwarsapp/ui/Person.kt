@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
@@ -87,17 +86,17 @@ fun getAllCharacters() {
       list.visibility = VISIBLE
       // Desabilita loader e aviso de conexão com a internet
         progress.visibility = GONE
-        noInternetImg.visibility = View.GONE
-        noInternetText.visibility = View.GONE
+        noInternetImg.visibility = GONE
+        noInternetText.visibility = GONE
     }
   })
 }
 
   fun emptyState() {
-    list.visibility = View.GONE
-    noInternetImg.visibility = View.VISIBLE
-    noInternetText.visibility = View.VISIBLE
-    progress.visibility = View.GONE
+    list.visibility = GONE
+    noInternetImg.visibility = VISIBLE
+    noInternetText.visibility = VISIBLE
+    progress.visibility = GONE
   }
 
   fun setupView() {
@@ -110,13 +109,40 @@ fun getAllCharacters() {
   }
 
   fun setupList(list: List<Character>) {
-    val names = list.map { it.name }
-    val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, names)
-    this.list.adapter = adapter
-    progress.visibility = VISIBLE
+    val index = 1
+    val model = list[index]
+    val modelToArrayList = arrayOf(
+      "Nome: ${model.name}",
+      "Altura: ${model.height}",
+      "Cor do Cabelo: ${model.hair_color}",
+      "Cor da Pele: ${model.skin_color}",
+      "Cor dos Olhos: ${model.eye_color}",
+      "Ano de Nascimento: ${model.birth_year}",
+      "Gênero: ${model.gender}",
+      "Planeta Natal: ${model.homeworld}",
+      "Peso: ${model.mass}",
+      "Filmes:${model.films}",
+      "Species: ${model.species}",
+      "Veículos: ${model.vehicles}",
+      "Naves Espaciais: ${model.starships}",
+      "URL: ${model.url}"
+    )
+
+    val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, modelToArrayList)
+    this.list.adapter = adapter // Assuming 'list' is a ListView or similar
+    progress.visibility = VISIBLE // Ensure 'progress' is properly referenced
+    saveSharedPref(model)
   }
 
- fun setupListeners() {
+  fun saveSharedPref(list: Character) {
+    val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+      with(sharedPref.edit()) {
+        putString(getString(R.string.saved_character), list.toString())
+        apply()
+      }
+  }
+
+  fun setupListeners() {
     btnBackBottom.setOnClickListener {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
@@ -127,7 +153,7 @@ fun getAllCharacters() {
  }
 
   fun checkForInternet(): Boolean {
-    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val network = connectivityManager.activeNetwork ?: return false

@@ -1,4 +1,5 @@
 package com.example.starwarsapp.ui
+
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -9,11 +10,13 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,29 +31,28 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-class CharacterActivity : AppCompatActivity() {
-
+class SelectorActivity : AppCompatActivity() {
   lateinit var btnBackBottom: Button
-  lateinit var list: ListView
   lateinit var btnBackbtnBackTop: FloatingActionButton
+  lateinit var btnSelected : Button
   lateinit var progress: ProgressBar
+  lateinit var spinner: Spinner
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_person)
+    setContentView(R.layout.activity_selector)
     setupRetrofit()
     setupView()
     setupListeners()
 
     if (checkForInternet()) {
-       getAllCharacters()
-     } else {
-       emptyState()
-     }
+      getAllCharacters()
+    } else {
+      emptyState()
+    }
 
     val checkInternet = checkForInternet()
     Log.d("There is internet?:", checkInternet.toString())
@@ -60,7 +62,7 @@ class CharacterActivity : AppCompatActivity() {
   override fun onResume() {
     super.onResume()
     if (checkForInternet()) {
-        getAllCharacters()
+      getAllCharacters()
     } else {
       emptyState()
     }
@@ -75,26 +77,24 @@ class CharacterActivity : AppCompatActivity() {
     characterApi = retrofit.create(CharacterApi::class.java)
   }
 
-  
-fun getAllCharacters() {
-  characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
-    override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
-      Toast.makeText(this@CharacterActivity, R.string.response_error, Toast.LENGTH_SHORT).show()
-    }
 
-    override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
-      p1.body()?.let {setupList(it.results)}
-      list.visibility = VISIBLE
-      // Desabilita loader e aviso de conexão com a internet
+  fun getAllCharacters() {
+    characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
+      override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
+        Toast.makeText(this@SelectorActivity, R.string.response_error, Toast.LENGTH_SHORT).show()
+      }
+
+      override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
+        p1.body()?.let {setupList(it.results)}
+        // Desabilita loader e aviso de conexão com a internet
         progress.visibility = GONE
         noInternetImg.visibility = View.GONE
         noInternetText.visibility = View.GONE
-    }
-  })
-}
+      }
+    })
+  }
 
   fun emptyState() {
-    list.visibility = View.GONE
     noInternetImg.visibility = View.VISIBLE
     noInternetText.visibility = View.VISIBLE
     progress.visibility = View.GONE
@@ -103,28 +103,45 @@ fun getAllCharacters() {
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
     btnBackbtnBackTop = findViewById(R.id.btnBackTop)
-    list = findViewById(R.id.lista)
     progress = findViewById(R.id.tbLoader)
     noInternetImg = findViewById(R.id.iv_empty_state)
     noInternetText = findViewById(R.id.tv_no_wifi)
+    spinner = findViewById(R.id.spinnerCharacters)
+    btnSelected = findViewById(R.id.btnSelected)
   }
+
 
   fun setupList(list: List<Character>) {
     val names = list.map { it.name }
     val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, names)
-    this.list.adapter = adapter
+    spinner.adapter = adapter
     progress.visibility = VISIBLE
   }
 
- fun setupListeners() {
+  fun setupListeners() {
     btnBackBottom.setOnClickListener {
-      startActivity(Intent(this, SelectorActivity::class.java))
+      startActivity(Intent(this, MainActivity::class.java))
     }
 
     btnBackbtnBackTop.setOnClickListener {
-      startActivity(Intent(this, SelectorActivity::class.java))
+      startActivity(Intent(this, MainActivity::class.java))
     }
- }
+
+    btnSelected.setOnClickListener {
+      startActivity(Intent(this, CharacterActivity::class.java))
+    }
+
+    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+      override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+        val selectedItem = parent.getItemAtPosition(position).toString()
+        Log.d("Item:", selectedItem)
+      }
+
+      override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
+      }
+    }
+  }
 
   fun checkForInternet(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -138,10 +155,10 @@ fun getAllCharacters() {
         else -> false
       }
     } else {
-        @Suppress("DEPRECATION")
-        val networkInfo = connectivityManager.activeNetworkInfo ?: return false
-        @Suppress("DEPRECATION")
-        return networkInfo.isConnected
-      }
+      @Suppress("DEPRECATION")
+      val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+      @Suppress("DEPRECATION")
+      return networkInfo.isConnected
     }
+  }
 }

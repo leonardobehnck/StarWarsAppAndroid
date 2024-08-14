@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">StarWarsAppRetrofit</string>
 	<string name="title_app">Meu primeiro App :)</string>
-	<string name="button_app">Ver Personagens</string>
+	<string name="button_app">Selecionar Personagens</string>
 	<string name="button_back">Voltar</string>
+    <string name="button_selected">Ver Personagem</string>
     <string name="txt_intro">Seja bem vindo(a) ao meu primeiro App.
 		Avance para obter uma lista dos personagens de StarWars
 		que foram consumidas de uma API. Obrigado!
     </string>
     <string name="ops_sem_sinal_de_internet">Ops, sem sinal de internet.</string>
 	<string name="response_error">Algo deu errado. Por favor tente novamente.</string>
+    <string name="e_mail">leonardo.behnck@gmail.com</string>
+    <string name="linked_in">linkedin.com/in/leonardobehnck</string>
+    <string name="git_hub">github.com/leonardobehnck</string>
 </resources>

@@ -1,4 +1,6 @@
 package com.example.starwarsapp.ui
+
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -37,6 +39,7 @@ class CharacterActivity : AppCompatActivity() {
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
+  public var index = com.example.starwarsapp.ui.SelectorActivity().index
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -44,6 +47,8 @@ class CharacterActivity : AppCompatActivity() {
     setupRetrofit()
     setupView()
     setupListeners()
+    setupCachedResult()
+
 
     if (checkForInternet()) {
        getAllCharacters()
@@ -53,6 +58,11 @@ class CharacterActivity : AppCompatActivity() {
 
     val checkInternet = checkForInternet()
     Log.d("There is internet?:", checkInternet.toString())
+  }
+
+  fun setupCachedResult() {
+    val sharedPref = getSharedPref()
+    Toast.makeText(this, "Ultimo personagem selecionado: ${sharedPref}", Toast.LENGTH_LONG).show()
   }
 
 
@@ -82,7 +92,7 @@ fun getAllCharacters() {
     }
 
     override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
-      p1.body()?.let {setupList(it.results)}
+      p1.body()?.let {setupList(it.results, index)}
       list.visibility = VISIBLE
       // Desabilita loader e aviso de conexão com a internet
         progress.visibility = GONE
@@ -108,8 +118,7 @@ fun getAllCharacters() {
     noInternetText = findViewById(R.id.tv_no_wifi)
   }
 
-  fun setupList(list: List<Character>) {
-    val index = 1
+  fun setupList(list: List<Character>, index: Int) {
     val model = list[index]
     val modelToArrayList = arrayOf(
       "Nome: ${model.name}",
@@ -122,24 +131,30 @@ fun getAllCharacters() {
       "Planeta Natal: ${model.homeworld}",
       "Peso: ${model.mass}",
       "Filmes:${model.films}",
-      "Species: ${model.species}",
+      "Especies: ${model.species}",
       "Veículos: ${model.vehicles}",
       "Naves Espaciais: ${model.starships}",
       "URL: ${model.url}"
     )
 
     val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, modelToArrayList)
-    this.list.adapter = adapter // Assuming 'list' is a ListView or similar
-    progress.visibility = VISIBLE // Ensure 'progress' is properly referenced
-    saveSharedPref(model)
+    this.list.adapter = adapter
+    progress.visibility = VISIBLE
+    saveSharedPref(model.name)
   }
 
-  fun saveSharedPref(list: Character) {
+  @SuppressLint("SuspiciousIndentation")
+  fun saveSharedPref(list: String) {
     val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
       with(sharedPref.edit()) {
-        putString(getString(R.string.saved_character), list.toString())
+        putString(getString(R.string.saved_character), list)
         apply()
       }
+  }
+
+  fun getSharedPref(): String {
+    val sharedPref = getPreferences(Context.MODE_PRIVATE)
+    return sharedPref.getString(getString(R.string.saved_character), "empty").toString()
   }
 
   fun setupListeners() {

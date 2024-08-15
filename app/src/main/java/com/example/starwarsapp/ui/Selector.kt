@@ -14,7 +14,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
@@ -40,6 +39,7 @@ class SelectorActivity : AppCompatActivity() {
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
+  var index : Int = 3
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -133,8 +133,8 @@ class SelectorActivity : AppCompatActivity() {
 
     spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        val selectedItem = parent.getItemAtPosition(position).toString()
-        Log.d("Item:", selectedItem)
+        val selectedItem = parent.getItemAtPosition(position)
+        index = position
       }
 
       override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -142,6 +142,8 @@ class SelectorActivity : AppCompatActivity() {
       }
     }
   }
+
+
 
   fun checkForInternet(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

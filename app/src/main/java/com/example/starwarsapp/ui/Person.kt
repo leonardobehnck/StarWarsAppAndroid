@@ -30,7 +30,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class CharacterActivity : AppCompatActivity() {
+class CharacterActivity(index: Int) : AppCompatActivity() {
 
   lateinit var btnBackBottom: Button
   lateinit var list: ListView
@@ -39,7 +39,7 @@ class CharacterActivity : AppCompatActivity() {
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
-  public var index = com.example.starwarsapp.ui.SelectorActivity().index
+  var index = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

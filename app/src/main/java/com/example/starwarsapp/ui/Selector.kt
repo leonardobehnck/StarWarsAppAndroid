@@ -19,6 +19,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import com.example.starwarsapp.R
 import com.example.starwarsapp.data.CharacterApi
 import com.example.starwarsapp.data.CharacterWrapper
@@ -39,7 +40,6 @@ class SelectorActivity : AppCompatActivity() {
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
-  var index : Int = 3
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -126,15 +126,15 @@ class SelectorActivity : AppCompatActivity() {
     btnBackbtnBackTop.setOnClickListener {
       startActivity(Intent(this, MainActivity::class.java))
     }
-
-    btnSelected.setOnClickListener {
-      startActivity(Intent(this, CharacterActivity::class.java))
+    var index = 0
+    btnSelected.setOnClickListener() {
+      startActivity(Intent(this, CharacterActivity(index)::class.java))
     }
 
     spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         val selectedItem = parent.getItemAtPosition(position)
-        index = position
+        var index = selectedItem as Int
       }
 
       override fun onNothingSelected(parent: AdapterView<*>?) {

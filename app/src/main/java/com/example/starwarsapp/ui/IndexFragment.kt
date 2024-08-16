@@ -12,6 +12,7 @@ import com.example.starwarsapp.R
 
 class IndexFragment : Fragment(){
   lateinit var btnNext: Button
+  lateinit var btnFavorite : Button
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -27,16 +28,20 @@ class IndexFragment : Fragment(){
     setupListeners()
   }
 
-
   fun setupView(view: View) {
     view.apply {
       btnNext = findViewById(R.id.btnNext)
+      btnFavorite = findViewById(R.id.btnFavorite)
     }
   }
 
   fun setupListeners() {
     btnNext.setOnClickListener {
       startActivity(Intent(context, SelectorActivity::class.java))
+    }
+
+    btnFavorite.setOnClickListener {
+      startActivity(Intent(context, FavoriteActivity::class.java))
     }
   }
 }

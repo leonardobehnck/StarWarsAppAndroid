@@ -8,6 +8,8 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
@@ -174,14 +176,20 @@ fun getAllCharacters() {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
  }
+  @SuppressLint("ClickableViewAccessibility")
   fun setupFavorite() {
-    btnFavorite.setOnClickListener {
-      Toast.makeText(this, "Favorito adicionado!", Toast.LENGTH_SHORT).show()
+    btnFavorite.setOnTouchListener(View.OnTouchListener { _, event ->
+      if (event.action == MotionEvent.ACTION_DOWN) {
+        btnFavorite.setImageResource(R.drawable.ic_star_click)
+        Toast.makeText(this, "Favorito adicionado!", Toast.LENGTH_SHORT).show()
 
-      val intent = Intent(this, FavoriteActivity::class.java)
-      intent.putExtra("model", model.toString())
-      startActivity(intent)
-    }
+        val intent = Intent(this, FavoriteActivity::class.java)
+        intent.putExtra("model", model.toString())
+        startActivity(intent)
+
+      }
+      true
+    })
   }
 
   fun checkForInternet(): Boolean {

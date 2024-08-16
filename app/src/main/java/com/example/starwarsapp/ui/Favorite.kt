@@ -1,8 +1,10 @@
 package com.example.starwarsapp.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Adapter
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
@@ -27,30 +29,19 @@ class FavoriteActivity : AppCompatActivity() {
     var model : String? = intent.getStringExtra("model")
     setupView()
     setupListeners()
-    model?.let { setupList(it) }
+    setupList(model.toString())
+
+  }
+
+
+  fun getSharedPref(): String {
+    val sharedPref = getPreferences(Context.MODE_PRIVATE)
+    return sharedPref.getString(getString(R.string.saved_character), "empty").toString()
   }
 
   fun setupList(model: String) {
     Log.d("teste", model)
-//    val modelToArrayList = arrayOf(
-//      "Nome: ${model.name}",
-//      "Altura: ${model.height}",
-//      "Cor do Cabelo: ${model.hair_color}",
-//      "Cor da Pele: ${model.skin_color}",
-//      "Cor dos Olhos: ${model.eye_color}",
-//      "Ano de Nascimento: ${model.birth_year}",
-//      "Gênero: ${model.gender}",
-//      "Planeta Natal: ${model.homeworld}",
-//      "Peso: ${model.mass}",
-//      "Filmes:${model.films}",
-//      "Especies: ${model.species}",
-//      "Veículos: ${model.vehicles}",
-//      "Naves Espaciais: ${model.starships}",
-//      "URL: ${model.url}"
-//    )
-
-    //val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, modelToArrayList)
-    //this.list.adapter = adapter
+    val sharedPref = getSharedPref()
   }
 
   fun setupView() {

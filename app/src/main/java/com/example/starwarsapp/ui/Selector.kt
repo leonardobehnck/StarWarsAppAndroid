@@ -1,5 +1,6 @@
 package com.example.starwarsapp.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -7,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -34,7 +36,6 @@ class SelectorActivity : AppCompatActivity() {
   lateinit var btnBackBottom: Button
   lateinit var btnBackbtnBackTop: FloatingActionButton
   lateinit var btnSelected: Button
-  lateinit var btnFavorite : ImageView
   lateinit var progress: ProgressBar
   lateinit var spinner: Spinner
   lateinit var noInternetImg: ImageView
@@ -103,7 +104,6 @@ class SelectorActivity : AppCompatActivity() {
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
     btnBackbtnBackTop = findViewById(R.id.btnBackTop)
-    btnFavorite = findViewById(R.id.favorite)
     progress = findViewById(R.id.tbLoader)
     noInternetImg = findViewById(R.id.iv_empty_state)
     noInternetText = findViewById(R.id.tv_no_wifi)
@@ -118,6 +118,7 @@ class SelectorActivity : AppCompatActivity() {
     progress.visibility = VISIBLE
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   fun setupListeners() {
     btnBackBottom.setOnClickListener {
       startActivity(Intent(this, MainActivity::class.java))
@@ -131,10 +132,6 @@ class SelectorActivity : AppCompatActivity() {
       val intent = Intent(this, CharacterActivity::class.java)
       intent.putExtra("index", index)
       startActivity(intent)
-    }
-
-    btnFavorite.setOnClickListener {
-      startActivity(Intent(this, FavoriteActivity::class.java))
     }
 
     spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -167,3 +164,4 @@ class SelectorActivity : AppCompatActivity() {
     }
   }
 }
+

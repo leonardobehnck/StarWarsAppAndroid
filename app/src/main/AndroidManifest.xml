@@ -33,6 +33,10 @@
             android:name=".ui.SelectorActivity">
         </activity>
 
+        <activity
+            android:name=".ui.FavoriteActivity">
+        </activity>
+
     </application>
 
 </manifest>

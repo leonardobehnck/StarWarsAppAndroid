@@ -30,25 +30,30 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class CharacterActivity(index: Int) : AppCompatActivity() {
+class CharacterActivity : AppCompatActivity() {
 
   lateinit var btnBackBottom: Button
-  lateinit var list: ListView
+  lateinit var btnFavorite : ImageView
   lateinit var btnBackbtnBackTop: FloatingActionButton
+  lateinit var list: ListView
   lateinit var progress: ProgressBar
   lateinit var noInternetImg : ImageView
   lateinit var noInternetText : TextView
   lateinit var characterApi : CharacterApi
-  var index = 0
+  var model: Character? = null
+  var index: Int = 0
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_person)
+    index = intent.getIntExtra("index", -1)
+
     setupRetrofit()
     setupView()
     setupListeners()
     setupCachedResult()
-
+    setupFavorite()
 
     if (checkForInternet()) {
        getAllCharacters()
@@ -112,14 +117,17 @@ fun getAllCharacters() {
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
     btnBackbtnBackTop = findViewById(R.id.btnBackTop)
+    btnFavorite = findViewById(R.id.favorite)
     list = findViewById(R.id.lista)
     progress = findViewById(R.id.tbLoader)
     noInternetImg = findViewById(R.id.iv_empty_state)
     noInternetText = findViewById(R.id.tv_no_wifi)
+
   }
 
   fun setupList(list: List<Character>, index: Int) {
     val model = list[index]
+    this.model = model
     val modelToArrayList = arrayOf(
       "Nome: ${model.name}",
       "Altura: ${model.height}",
@@ -166,6 +174,15 @@ fun getAllCharacters() {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
  }
+  fun setupFavorite() {
+    btnFavorite.setOnClickListener {
+      Toast.makeText(this, "Favorito adicionado!", Toast.LENGTH_SHORT).show()
+
+      val intent = Intent(this, FavoriteActivity::class.java)
+      intent.putExtra("model", model.toString())
+      startActivity(intent)
+    }
+  }
 
   fun checkForInternet(): Boolean {
     val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager

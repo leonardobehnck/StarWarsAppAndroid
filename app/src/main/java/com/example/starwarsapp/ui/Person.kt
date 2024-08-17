@@ -1,6 +1,7 @@
 package com.example.starwarsapp.ui
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -20,9 +21,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.starwarsapp.R
 import com.example.starwarsapp.data.CharacterApi
 import com.example.starwarsapp.data.CharacterWrapper
+import com.example.starwarsapp.data.local.CharacterContract
+import com.example.starwarsapp.data.local.CharacterContract.CharacterEntry.TABLE_NAME
+import com.example.starwarsapp.data.local.CharacterDbHelper
+import com.example.starwarsapp.data.local.CharacterRepository
 import com.example.starwarsapp.domain.Character
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
@@ -183,9 +189,10 @@ fun getAllCharacters() {
         btnFavorite.setImageResource(R.drawable.ic_star_click)
         Toast.makeText(this, "Favorito adicionado!", Toast.LENGTH_SHORT).show()
 
-        val intent = Intent(this, FavoriteActivity::class.java)
-        intent.putExtra("model", model.toString())
-        startActivity(intent)
+        //Chama classe para gravar no banco de dados
+        model?.let { CharacterRepository(this).save(it) }
+
+        startActivity(Intent(this, FavoriteActivity::class.java))
 
       }
       true
@@ -210,4 +217,4 @@ fun getAllCharacters() {
         return networkInfo.isConnected
       }
     }
-}
+  }

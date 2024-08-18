@@ -1,7 +1,7 @@
 package com.example.starwarsapp.domain
 
 data class Character(
-  val id: Int,
+  var id: Int,
   val name: String,
   val height: String,
   val mass: String,

@@ -1,19 +1,18 @@
 package com.example.starwarsapp.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.starwarsapp.R
-import com.example.starwarsapp.data.local.CharacterDbHelper
+import com.example.starwarsapp.data.local.CharacterRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 lateinit var btnBackBottom: Button
-lateinit var btnBackbtnBackTop: FloatingActionButton
+lateinit var btnBackBackTop: FloatingActionButton
 lateinit var list: ListView
 
 class FavoriteActivity : AppCompatActivity() {
@@ -22,31 +21,43 @@ class FavoriteActivity : AppCompatActivity() {
     setContentView(R.layout.activity_favorite)
     setupView()
     setupListeners()
-    //setupList()
+    setupList()
   }
 
-  fun getSharedPref(): String {
-    val sharedPref = getPreferences(Context.MODE_PRIVATE)
-    return sharedPref.getString(getString(R.string.saved_character), "empty").toString()
+  fun setupList() {
+    val model = CharacterRepository(this).findCharacterById(4)
+    val modelToArrayList = arrayOf(
+      "ID: ${model.id}",
+      "Nome: ${model.name}",
+      "Altura: ${model.height}",
+      "Cor do Cabelo: ${model.hair_color}",
+      "Cor da Pele: ${model.skin_color}",
+      "Cor dos Olhos: ${model.eye_color}",
+      "Ano de Nascimento: ${model.birth_year}",
+      "Gênero: ${model.gender}",
+      "Planeta Natal: ${model.homeworld}",
+      "Peso: ${model.mass}",
+      "URL: ${model.url}"
+    )
+
+    val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, modelToArrayList)
+    list.adapter = adapter
   }
 
-//  fun setupList(model: String) {
-//    Log.d("teste", model)
-//    val sharedPref = getSharedPref()
-//  }
 
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
-    btnBackbtnBackTop = findViewById(R.id.btnBackTop)
+    btnBackBackTop = findViewById(R.id.btnBackTop)
     list = findViewById(R.id.lista)
 
   }
+
   fun setupListeners() {
     btnBackBottom.setOnClickListener {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
 
-    btnBackbtnBackTop.setOnClickListener {
+    btnBackBackTop.setOnClickListener {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
   }

@@ -57,6 +57,7 @@ class CharacterActivity : AppCompatActivity() {
     setContentView(R.layout.activity_person)
     index = intent.getIntExtra("index", -1)
 
+
     setupRetrofit()
     setupView()
     setupListeners()
@@ -136,6 +137,8 @@ fun getAllCharacters() {
   fun setupList(list: List<Character>, index: Int) {
     val model = list[index]
     this.model = model
+    model.id = index
+
     val modelToArrayList = arrayOf(
       "Nome: ${model.name}",
       "Altura: ${model.height}",
@@ -150,8 +153,10 @@ fun getAllCharacters() {
       "Especies: ${model.species}",
       "Veículos: ${model.vehicles}",
       "Naves Espaciais: ${model.starships}",
-      "URL: ${model.url}"
+      "URL: ${model.url}",
+      "ID: ${model.id}"
     )
+
 
     val adapter = ArrayAdapter(this, R.layout.list_item, R.id.text_view, modelToArrayList)
     this.list.adapter = adapter

@@ -14,7 +14,8 @@
     <string name="linked_in">linkedin.com/in/leonardobehnck</string>
     <string name="git_hub">github.com/leonardobehnck</string>
     <string name="saved_character" />
-    <string name="seletec_character">Personagem Selecionado</string>
+    <string name="seletec_character">Personagem</string>
     <string name="favorite">Favoritos</string>
+    <string name="no_favorite">Nenhum favorito adicionado.</string>
     <string name="btn_favorites">Ver Favoritos</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.starwarsapp.ui
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -21,13 +20,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.starwarsapp.R
 import com.example.starwarsapp.data.CharacterApi
 import com.example.starwarsapp.data.CharacterWrapper
-import com.example.starwarsapp.data.local.CharacterContract
-import com.example.starwarsapp.data.local.CharacterContract.CharacterEntry.TABLE_NAME
-import com.example.starwarsapp.data.local.CharacterDbHelper
 import com.example.starwarsapp.data.local.CharacterRepository
 import com.example.starwarsapp.domain.Character
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,13 +36,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class CharacterActivity : AppCompatActivity() {
 
   lateinit var btnBackBottom: Button
-  lateinit var btnFavorite : ImageView
+  lateinit var btnAddFavorite: ImageView
   lateinit var btnBackbtnBackTop: FloatingActionButton
+  lateinit var btnFavorites : Button
   lateinit var list: ListView
   lateinit var progress: ProgressBar
-  lateinit var noInternetImg : ImageView
-  lateinit var noInternetText : TextView
-  lateinit var characterApi : CharacterApi
+  lateinit var noInternetImg: ImageView
+  lateinit var noInternetText: TextView
+  lateinit var characterApi: CharacterApi
   var model: Character? = null
   var index: Int = 0
 
@@ -65,10 +61,10 @@ class CharacterActivity : AppCompatActivity() {
     setupFavorite()
 
     if (checkForInternet()) {
-       getAllCharacters()
-     } else {
-       emptyState()
-     }
+      getAllCharacters()
+    } else {
+      emptyState()
+    }
 
     val checkInternet = checkForInternet()
     Log.d("There is internet?:", checkInternet.toString())
@@ -83,7 +79,7 @@ class CharacterActivity : AppCompatActivity() {
   override fun onResume() {
     super.onResume()
     if (checkForInternet()) {
-        getAllCharacters()
+      getAllCharacters()
     } else {
       emptyState()
     }
@@ -98,23 +94,23 @@ class CharacterActivity : AppCompatActivity() {
     characterApi = retrofit.create(CharacterApi::class.java)
   }
 
-  
-fun getAllCharacters() {
-  characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
-    override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
-      Toast.makeText(this@CharacterActivity, R.string.response_error, Toast.LENGTH_SHORT).show()
-    }
 
-    override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
-      p1.body()?.let {setupList(it.results, index)}
-      list.visibility = VISIBLE
-      // Desabilita loader e aviso de conexão com a internet
+  fun getAllCharacters() {
+    characterApi.getAllCharacters().enqueue(object : Callback<CharacterWrapper> {
+      override fun onFailure(p0: Call<CharacterWrapper>, p1: Throwable) {
+        Toast.makeText(this@CharacterActivity, R.string.response_error, Toast.LENGTH_SHORT).show()
+      }
+
+      override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
+        p1.body()?.let { setupList(it.results, index) }
+        list.visibility = VISIBLE
+        // Desabilita loader e aviso de conexão com a internet
         progress.visibility = GONE
         noInternetImg.visibility = GONE
         noInternetText.visibility = GONE
-    }
-  })
-}
+      }
+    })
+  }
 
   fun emptyState() {
     list.visibility = GONE
@@ -126,7 +122,8 @@ fun getAllCharacters() {
   fun setupView() {
     btnBackBottom = findViewById(R.id.btnBackBottom)
     btnBackbtnBackTop = findViewById(R.id.btnBackTop)
-    btnFavorite = findViewById(R.id.favorite)
+    btnAddFavorite = findViewById(R.id.btn_add_favorite)
+    btnFavorites = findViewById(R.id.btnFavorites)
     list = findViewById(R.id.lista)
     progress = findViewById(R.id.tbLoader)
     noInternetImg = findViewById(R.id.iv_empty_state)
@@ -167,10 +164,10 @@ fun getAllCharacters() {
   @SuppressLint("SuspiciousIndentation")
   fun saveSharedPref(list: String) {
     val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
-      with(sharedPref.edit()) {
-        putString(getString(R.string.saved_character), list)
-        apply()
-      }
+    with(sharedPref.edit()) {
+      putString(getString(R.string.saved_character), list)
+      apply()
+    }
   }
 
   fun getSharedPref(): String {
@@ -186,18 +183,20 @@ fun getAllCharacters() {
     btnBackbtnBackTop.setOnClickListener {
       startActivity(Intent(this, SelectorActivity::class.java))
     }
- }
+    btnFavorites.setOnClickListener {
+      startActivity(Intent(this, FavoriteActivity::class.java))
+    }
+  }
+
   @SuppressLint("ClickableViewAccessibility")
   fun setupFavorite() {
-    btnFavorite.setOnTouchListener(View.OnTouchListener { _, event ->
+    btnAddFavorite.setOnTouchListener(View.OnTouchListener { _, event ->
       if (event.action == MotionEvent.ACTION_DOWN) {
-        btnFavorite.setImageResource(R.drawable.ic_star_click)
-        Toast.makeText(this, "Favorito adicionado!", Toast.LENGTH_SHORT).show()
+
+        btnAddFavorite.setImageResource(R.drawable.ic_star_click)
 
         //Chama classe para gravar no banco de dados
-        model?.let { CharacterRepository(this).save(it) }
-
-        startActivity(Intent(this, FavoriteActivity::class.java))
+        model?.let { CharacterRepository(this).saveIfNotExist(it) }
 
       }
       true
@@ -216,10 +215,10 @@ fun getAllCharacters() {
         else -> false
       }
     } else {
-        @Suppress("DEPRECATION")
-        val networkInfo = connectivityManager.activeNetworkInfo ?: return false
-        @Suppress("DEPRECATION")
-        return networkInfo.isConnected
-      }
+      @Suppress("DEPRECATION")
+      val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+      @Suppress("DEPRECATION")
+      return networkInfo.isConnected
     }
   }
+}

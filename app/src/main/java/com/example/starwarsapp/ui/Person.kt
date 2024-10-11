@@ -38,7 +38,7 @@ class CharacterActivity : AppCompatActivity() {
   lateinit var btnBackBottom: Button
   lateinit var btnAddFavorite: ImageView
   lateinit var btnBackbtnBackTop: FloatingActionButton
-  lateinit var btnFavorites : Button
+  lateinit var btnFavorites: Button
   lateinit var list: ListView
   lateinit var progress: ProgressBar
   lateinit var noInternetImg: ImageView
@@ -161,7 +161,6 @@ class CharacterActivity : AppCompatActivity() {
     saveSharedPref(model.name)
   }
 
-  @SuppressLint("SuspiciousIndentation")
   fun saveSharedPref(list: String) {
     val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
     with(sharedPref.edit()) {

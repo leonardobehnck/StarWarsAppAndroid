@@ -18,4 +18,5 @@
     <string name="favorite">Favoritos</string>
     <string name="no_favorite">Nenhum favorito adicionado.</string>
     <string name="btn_favorites">Ver Favoritos</string>
+    <string name="selecione_um_personagem">Selecione um personagem...</string>
 </resources>

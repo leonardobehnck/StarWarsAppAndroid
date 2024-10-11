@@ -79,7 +79,7 @@
         android:layout_height="40dp"
         android:layout_margin="25dp"
         style="@android:attr/spinnerStyle"
-        android:prompt="@string/title_app"
+        android:hint="@string/selecione_um_personagem"
         android:background="@color/black"
         android:dropDownSelector="@color/black"
         android:popupBackground="@color/black"

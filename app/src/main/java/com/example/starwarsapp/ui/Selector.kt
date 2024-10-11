@@ -87,6 +87,7 @@ class SelectorActivity : AppCompatActivity() {
 
       override fun onResponse(p0: Call<CharacterWrapper>, p1: Response<CharacterWrapper>) {
         p1.body()?.let { setupList(it.results) }
+        Log.e("Response", p1.body().toString())
         // Desabilita loader e aviso de conexão com a internet
         progress.visibility = GONE
         noInternetImg.visibility = View.GONE

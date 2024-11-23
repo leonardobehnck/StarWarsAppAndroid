@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-  namespace = "com.example.starwarsapp"
+  namespace = "com.app.starwarsapp"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "com.example.starwarsapp"
+    applicationId = "com.app.starwarsapp"
     minSdk = 21
     targetSdk = 34
     versionCode = 1
